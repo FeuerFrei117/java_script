@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        Реализовать функцию с тремя параметрами: function mathOperation(arg1, arg2, operation),
+        где arg1, arg2 – значения аргументов, operation – строка с названием операции. В зависимости от
+        переданного значения операции (использовать switch) выполнить одну из арифметических операций
+        (использовать функции из задания 4) и вернуть полученное значение.
+        */
+
+        function mathOperation(arg1, arg2, operation) {
+            switch (operation) {
+                case 'сложение':
+                    alert(arg1 + arg2);
+                    break;
+                case 'вычетание':
+                    alert(arg1 - arg2);
+                    break;
+                case 'умножение':
+                    alert(arg1 * arg2);
+                    break;
+                case 'деление':
+                    alert(arg1 / arg2);
+                    break;
+            }
+        }
+
+        mathOperation(5, 5, 'сложение');
+        mathOperation(5, 5, 'вычетание');
+        mathOperation(5, 5, 'умножение');
+        mathOperation(5, 5, 'деление');
+
+    </script>
+</body>
+
+</html>
