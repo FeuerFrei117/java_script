@@ -13,15 +13,17 @@ class Game {
      * @param {Board} board 
      * @param {Snake} snake 
      * @param {Menu} menu 
-     * @param {Food} food 
+     * @param {Food} food
+     * @param {Score} score
      */
-    init(settings, status, board, snake, menu, food) {
+    init(settings, status, board, snake, menu, food, score) {
         this.settings = settings;
         this.status = status;
         this.board = board;
         this.snake = snake;
         this.menu = menu;
         this.food = food;
+        this.score = score;
     }
 
     /**
@@ -29,6 +31,7 @@ class Game {
      * "Пауза", а так же на стрелки на клавиатуре.
      */
     run() {
+        this.score.setToWin(this.settings.winLength);
         this.menu.addButtonsClickListeners(this.start.bind(this), this.pause.bind(this));
         document.addEventListener('keydown', this.pressKeyHandler.bind(this));
     }
@@ -62,7 +65,8 @@ class Game {
      */
     doTick() {
         this.snake.performStep();
-        if (this.isGameLost()) {
+        this.score.setCurrent(this.snake.body.length);
+        if (this.isSnakeSteppedOntoItself()) {
             return;
         }
         if (this.isGameWon()) {
@@ -86,6 +90,23 @@ class Game {
     isGameWon() {
         if (this.snake.body.length == this.settings.winLength) {
             clearInterval(this.tickIdentifier);
+            this.setMessage('Вы выиграли!');
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Метод проверяет съела ли змейка мама себя.
+     * @returns {boolean}
+     */
+    isSnakeSteppedOntoItself() {
+        let cellArr = this.snake.body.map(function (cellCoords) {
+            return cellCoords.x.toString() + cellCoords.y.toString();
+        });
+        let head = cellArr.shift();
+        if (cellArr.includes(head)) {
+            clearInterval(this.tickIdentifier);
             this.setMessage('Вы проиграли');
             return true;
         }
@@ -93,6 +114,9 @@ class Game {
     }
 
     /**
+     * @deprecated Метод больше не используется, т.к. теперь
+     * змейка может проходить через стены.
+     * 
      * Метод проверяет проиграна ли игра, останавливает игру
      * в случае проигрыша, выводит сообщения о проигрыше.
      * @returns {boolean} если мы шагнули в стену, тогда

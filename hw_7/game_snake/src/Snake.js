@@ -5,20 +5,21 @@ class Snake {
         this.possibleDirections = ['down', 'up', 'left', 'right'];
 
 
-        this.body = [{
-            x: 1,
-            y: 3,
-        },
-        {
-            x: 1,
-            y: 2,
-        },
-        {
-            x: 1,
-            y: 1,
-        },]
+        this.body = [
+            {
+                x: 1,
+                y: 1,
+            },
+        ]
 
         this.direction = 'down';
+    }
+
+    /**
+     * @param {Settings} settings настройки игры
+     */
+    init(settings) {
+        this.settings = settings;
     }
 
     /**
@@ -82,6 +83,24 @@ class Snake {
                 newHeadCoords.x++;
                 break;
         }
+
+        // если голова уходит за правый край
+        if (newHeadCoords.x > this.settings.colsCount) {
+            newHeadCoords.x = 1;
+        }
+        // если голова уходит за нижний край
+        if (newHeadCoords.y > this.settings.colsCount) {
+            newHeadCoords.y = 1;
+        }
+        // если голова уходит за левый край
+        if (newHeadCoords.x == 0) {
+            newHeadCoords.x = this.settings.colsCount;
+        }
+        // если голова уходит за правый край
+        if (newHeadCoords.y == 0) {
+            newHeadCoords.y = this.settings.rowsCount;
+        }
+
         this.body.unshift(newHeadCoords);
         this.body.pop();
     }
