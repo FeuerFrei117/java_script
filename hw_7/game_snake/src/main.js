@@ -5,21 +5,23 @@ window.addEventListener('load', () => {
     const status = new Status();
     const snake = new Snake();
     const board = new Board();
-    const menu = new Menu();
-    const food = new Food();
+    const controls = new Controls();
     const game = new Game();
     const score = new Score();
 
-    settings.init({ speed: 5, winLength: 5 });
+    const initialSettings = { speed: 5, winLength: 10 };
+
+    settings.init(initialSettings);
     snake.init(settings);
     board.init(settings, snake);
-    food.init(settings, snake, board);
-    game.init(settings, status, board, snake, menu, food, score);
+    game.init(settings, status, board, snake, controls, score);
     score.init(settings);
+    controls.init(game);
 
     board.renderBoard();
-    board.renderSnake();
-
-    food.setNewFood();
-    game.run();
+    board.renderSnake(snake);
+    score.renderPointsForWin(initialSettings.winLength);
+    board.renderNewFood();
+    score.renderCurrentScore(snake.body.length);
+    controls.addControlsEventListeners();
 });

@@ -11,29 +11,17 @@ class Game {
      * @param {Settings} settings 
      * @param {Status} status 
      * @param {Board} board 
-     * @param {Snake} snake 
-     * @param {Menu} menu 
-     * @param {Food} food
+     * @param {Snake} snake
+     * @param {Controls} controls 
      * @param {Score} score
      */
-    init(settings, status, board, snake, menu, food, score) {
+    init(settings, status, board, snake, controls, score) {
         this.settings = settings;
         this.status = status;
         this.board = board;
         this.snake = snake;
-        this.menu = menu;
-        this.food = food;
+        this.controls = controls;
         this.score = score;
-    }
-
-    /**
-     * Метод назначает обработчики на события клика на кнопки "Старт",
-     * "Пауза", а так же на стрелки на клавиатуре.
-     */
-    run() {
-        this.score.setToWin(this.settings.winLength);
-        this.menu.addButtonsClickListeners(this.start.bind(this), this.pause.bind(this));
-        document.addEventListener('keydown', this.pressKeyHandler.bind(this));
     }
 
     /**
@@ -52,52 +40,52 @@ class Game {
     pause() {
         if (this.status.isPlaying()) {
             this.status.setPaused();
-            clearInterval(this.tickIdentifier);
+            this.stopGame();
         }
     }
 
     /**
-     * Этот метод запускает каждую секунду и осуществляет:
+     * Этот метод запускается каждую секунду и осуществляет:
      * 1. перемещение змейки
      * 2. проверяет проиграна/выиграна ли игра
-     * 3. увеличивает размер змейки если они ест еду
+     * 3. увеличивает размер змейки если она ест еду
      * 4. заново отрисовывает положение змейки и еды
      */
     doTick() {
         this.snake.performStep();
-        this.score.setCurrent(this.snake.body.length);
         if (this.isSnakeSteppedOntoItself()) {
+            this.stopGame();
+            this.setMessage('Вы проиграли');
             return;
         }
-        if (this.isGameWon()) {
-            return;
-        }
-        if (this.board.isHeadOnFood()) {
+        if (this.board.didSnakeEatFood()) {
             this.snake.increaseBody();
-            this.food.setNewFood();
+            this.score.renderCurrentScore(this.snake.body.length);
+
+            if (this.isGameWon()) {
+                this.stopGame();
+                this.setMessage('Вы выиграли');
+                return;
+            }
+
+            this.board.clearFood();
+            this.board.renderNewFood();
         }
-        this.board.clearBoard();
-        this.food.setFood();
+        this.board.clearSnake();
         this.board.renderSnake();
     }
 
     /**
-     * Метод проверяет выиграна ли игра, останавливает игру,
-     * выводит сообщение о выигрыше.
+     * Метод проверяет выиграна ли игра.
      * @returns {boolean} если длина змейки достигла длины нужной
      * для выигрыша, тогда true, иначе false.
      */
     isGameWon() {
-        if (this.snake.body.length == this.settings.winLength) {
-            clearInterval(this.tickIdentifier);
-            this.setMessage('Вы выиграли!');
-            return true;
-        }
-        return false;
+        return this.snake.body.length == this.settings.winLength;
     }
 
     /**
-     * Метод проверяет съела ли змейка мама себя.
+     * Метод проверяет съела ли змейка cама себя.
      * @returns {boolean}
      */
     isSnakeSteppedOntoItself() {
@@ -105,36 +93,17 @@ class Game {
             return cellCoords.x.toString() + cellCoords.y.toString();
         });
         let head = cellArr.shift();
-        if (cellArr.includes(head)) {
-            clearInterval(this.tickIdentifier);
-            this.setMessage('Вы проиграли');
-            return true;
-        }
-        return false;
+        return cellArr.includes(head);
     }
 
-    /**
-     * @deprecated Метод больше не используется, т.к. теперь
-     * змейка может проходить через стены.
-     * 
-     * Метод проверяет проиграна ли игра, останавливает игру
-     * в случае проигрыша, выводит сообщения о проигрыше.
-     * @returns {boolean} если мы шагнули в стену, тогда
-     * true, иначе false. 
-     */
-    isGameLost() {
-        if (this.board.isNextStepToWall(this.snake.body[0])) {
-            clearInterval(this.tickIdentifier);
-            this.setMessage('Вы проиграли');
-            return true;
-        }
-        return false;
+    stopGame() {
+        clearInterval(this.tickIdentifier);
     }
 
     /**
      * В зависимости от нажатой кнопки (вверх, вниз, влево, вправо) будет
      * вызываться соответствующий метод.
-     * @param {KeyBoardEvent} event 
+     * @param {KeyboardEvent} event 
      */
     pressKeyHandler(event) {
         switch (event.key) {

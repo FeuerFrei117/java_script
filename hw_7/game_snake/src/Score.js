@@ -7,7 +7,6 @@ class Score {
     }
 
     /**
-     * 
      * @param {Settings} settings настройки игры
      */
     init(settings) {
@@ -16,17 +15,17 @@ class Score {
 
     /**
      * Метод устанавливает количество очков, необходимых для выигрыша.
-     * @param {string} text 
+     * @param {string} points 
      */
-    setToWin(text) {
-        this.toWinEl.textContent = text;
+    renderPointsForWin(points) {
+        this.toWinEl.textContent = points;
     }
 
     /**
      * Метод устанавливает текущий счет игрока.
-     * @param {string} text 
+     * @param {string} score 
      */
-    setCurrent(text) {
-        this.currentEl.textContent = text;
+    renderCurrentScore(score) {
+        this.currentEl.textContent = score;
     }
 }

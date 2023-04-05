@@ -9,8 +9,8 @@ class Snake {
             {
                 x: 1,
                 y: 1,
-            },
-        ]
+            }
+        ];
 
         this.direction = 'down';
     }
@@ -39,7 +39,7 @@ class Snake {
 
     /**
      * Метод проверяет, является ли переданное направление, противоположным
-     * тому куда движется змейка.
+     * тому куда сейчас движется змейка.
      * @param {string} newDirection новое направление, может быть up, down, right, left.
      * @returns {boolean} true если новое направление противоположно текущему, иначе false.
      */
@@ -61,14 +61,11 @@ class Snake {
 
     /**
      * Метод осуществляет шаг змейки. Добавляет ячейку перед существующим
-     * положением гловы и удаляет одну ячейку в хвосте.
+     * положением головы и удаляет одну ячейку в хвосте.
      */
     performStep() {
         let currentHeadCoords = this.body[0];
-        let newHeadCoords = {
-            x: currentHeadCoords.x,
-            y: currentHeadCoords.y,
-        };
+        let newHeadCoords = { ...currentHeadCoords };
         switch (this.direction) {
             case 'down':
                 newHeadCoords.y++;
@@ -89,14 +86,14 @@ class Snake {
             newHeadCoords.x = 1;
         }
         // если голова уходит за нижний край
-        if (newHeadCoords.y > this.settings.colsCount) {
+        if (newHeadCoords.y > this.settings.rowsCount) {
             newHeadCoords.y = 1;
         }
         // если голова уходит за левый край
         if (newHeadCoords.x == 0) {
             newHeadCoords.x = this.settings.colsCount;
         }
-        // если голова уходит за правый край
+        // если голова уходит за верхний край
         if (newHeadCoords.y == 0) {
             newHeadCoords.y = this.settings.rowsCount;
         }
@@ -114,10 +111,7 @@ class Snake {
      */
     increaseBody() {
         let bodyLastCell = this.body[this.body.length - 1];
-        let newBodyLastCell = {
-            x: bodyLastCell.x,
-            y: bodyLastCell.y,
-        };
+        let newBodyLastCell = { ...bodyLastCell };
         this.body.push(newBodyLastCell);
     }
 }

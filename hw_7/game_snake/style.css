@@ -45,6 +45,8 @@ td {
 #message {
     color: orange;
     font-size: 24px;
+    font-family: sans-serif;
+    font-weight: bold;
 }
 
 .score {
