@@ -8,4 +8,5 @@
     position: fixed;
     top: calc(100vh + 20px);
     transition-duration: 0.5s;
+    transform: translateY(10px);
 }
