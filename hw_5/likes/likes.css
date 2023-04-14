@@ -1,0 +1,14 @@
+body {
+    font-size: 20px;
+    font-family: sans-serif;
+}
+
+.container {
+    width: 900px;
+    margin: 0 auto;
+}
+
+i {
+    color: blue;
+    cursor: pointer;
+}
